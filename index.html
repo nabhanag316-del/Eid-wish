@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eid High-Res Poster Generator</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Anek Malayalam', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* പ്രിവ്യൂ ബോക്സ് - ഫോണിൽ കാണാൻ വേണ്ടി മാത്രം */
+        #preview-container {
+            position: relative;
+            width: 350px; 
+            height: 350px;
+            background-image: url('Eid_Design.jpg'); /* നിങ്ങളുടെ ചിത്രത്തിന്റെ പേര് */
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            
+        }
+
+        /* പ്രിവ്യൂവിലെ പേരിന്റെ സ്ഥാനം */
+        #preview-name-wrapper {
+            position: absolute;
+            left: 5px;
+            bottom: 110px;
+            width: 170px;
+            lineHeight: -5px;
+            text-align: center;
+        }
+
+        #preview-name {
+            font-size: 18px;
+            color: #2d4d3b;
+            font-weight: 600;
+        }
+
+        /* താഴെയുള്ള ഇൻപുട്ട് ഭാഗം */
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+            font-family: 'Anek Malayalam', sans-serif;
+        }
+
+        input:focus { border-color: #2d4d3b; }
+
+        button {
+            background-color: #c62828;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        /* ഒറിജിനൽ ഹൈ-റെസ് ക്യാൻവാസ് മറച്ചു വെക്കുന്നു */
+        #mainCanvas { display: none; }
+    </style>
+</head>
+<body>
+
+    <h2 style="color: #2d4d3b;">Eid Greeting Maker</h2>
+
+    <div id="preview-container">
+        <div id="preview-name-wrapper">
+            <div id="preview-name">നിങ്ങളുടെ പേര്</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="nameInput" placeholder="പേര് ഇവിടെ ടൈപ്പ് ചെയ്യുക...(MAL/ENG)" oninput="updatePreview()">
+        <button onclick="generateHighRes()">download Poster</button>
+    </div>
+
+    <canvas id="mainCanvas"></canvas>
+
+    <script>
+        // ടൈപ്പ് ചെയ്യുമ്പോൾ പ്രിവ്യൂ മാറാൻ
+        function updatePreview() {
+            let name = document.getElementById('nameInput').value;
+            document.getElementById('preview-name').innerText = name ? name : "നിങ്ങളുടെ പേര്";
+        }
+
+        // യഥാർത്ഥ 3264px ചിത്രമായി മാറ്റാൻ
+        function generateHighRes() {
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            const userName = document.getElementById('nameInput').value || "നിങ്ങളുടെ പേര്";
+            const size = 3264;
+
+            canvas.width = size;
+            canvas.height = size;
+
+            const img = new Image();
+            img.src = 'Eid_Design.jpg'; 
+            img.crossOrigin = "Anonymous";
+
+            img.onload = function() {
+                // ബാക്ക്ഗ്രൗണ്ട് ചിത്രം 3264px-ൽ വരയ്ക്കുന്നു
+                ctx.drawImage(img, 0, 0, size, size);
+
+                // ഹൈ-റെസ് പേരിനുള്ള സെറ്റിംഗ്സ്
+                ctx.font = "semi-condensed 600 180px 'Anek Malayalam'"; 
+                ctx.fillStyle = "#2d4d3b";
+                ctx.textAlign = "center";
+
+                // പേരിന്റെ സ്ഥാനം (3264px അനുസരിച്ച് ക്രമീകരിച്ചത്)
+                const x = size * 0.28; 
+                const y = size * 0.58; 
+
+                ctx.fillText(userName, x, y);
+
+                // ഡൗൺലോഡ്
+                const link = document.createElement('a');
+                link.download = 'Eid_Wish_3264px.png';
+                link.href = canvas.toDataURL("image/png", 1.0);
+                link.click();
+            };
+        }
+    </script>
+
+</body>
+</html>
